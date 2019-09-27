@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="WARN">
+<appenders>
+<Console name="Console" target="SYSTEM_OUT">
+<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+</Console>
+
+<File name="Error" fileName="logs/appError.log">
+<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    <Filters>
+        <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY" />
+    </Filters>
+</File>
+
+<File name="Warn" fileName="logs/appWarn.log">
+<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %logger{36} - %msg%n"/>
+    <Filters>
+        <ThresholdFilter level="warn" onMatch="ACCEPT" onMismatch="DENY" />
+    </Filters>
+</File>
+
+<File name="Info" fileName="logs/appInfo.log">
+<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %logger{36} - %msg%n"/>
+    <Filters>
+        <ThresholdFilter level="warn" onMatch="DENY" onMismatch="NEUTRAL" />
+    </Filters>
+</File>
+
+</appenders>
+
+<loggers>
+<root level="debug">
+<appender-ref ref="Console" level="info"/>
+<appender-ref ref="Error" />
+<appender-ref ref="Warn" />
+<appender-ref ref="Info" />
+
+</root>
+</loggers>
+</configuration>
