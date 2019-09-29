@@ -8,15 +8,12 @@ public class JsonClass {
     public JsonClass() {
         stations = new TreeMap<>();
         lines = new TreeSet<>();
-        connections = new TreeSet<>(new Comparator<TreeSet<Connection>>() {
-            @Override
-            public int compare(TreeSet<Connection> o1, TreeSet<Connection> o2) {
-                if (o1.containsAll(o2) && o2.containsAll(o1))
-                    return 0;
-                if (o1.containsAll(o2) && !o2.containsAll(o1))
-                    return 1;
-                return -1;
-            }
+        connections = new TreeSet<>((o1, o2) -> {
+            if (o1.containsAll(o2) && o2.containsAll(o1))
+                return 0;
+            if (o1.containsAll(o2) && !o2.containsAll(o1))
+                return 1;
+            return -1;
         });
     }
 

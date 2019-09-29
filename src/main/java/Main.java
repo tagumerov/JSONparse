@@ -38,6 +38,7 @@ public class Main {
                     List<String> urlsOfConnections = element.nextElementSibling().nextElementSibling().nextElementSibling().select("a[href]").eachAttr("href");
                     List<String> connectionStationsLinesNumbers = element.nextElementSibling().nextElementSibling().nextElementSibling().select("span[style][class]").eachText();
                     connections = new TreeSet<>();
+                    boolean stationNumberLessThanConnectionNumber = true;
 
                     for (int j = 0; j < urlsOfConnections.size(); j++) {
                         String urlPrefix = "https://ru.wikipedia.org";
@@ -46,7 +47,11 @@ public class Main {
                         Elements connectionStationsNames = connection.select("#mw-content-text > div table.infobox th[class=infobox-above]");
 //                        System.out.println("Линия перехода: " + zeroCut(connectionStationsLinesNumbers.get(j)));
 //                        System.out.println("Станция перехода: " + removeQuotes(connectionStationsNames.eachText().get(0)));
-                        connections.add(new Connection(zeroCut(connectionStationsLinesNumbers.get(j)), removeQuotes(connectionStationsNames.eachText().get(0))));
+                        if(toInt(zeroCut(linesNumbers.get(i))) < toInt(zeroCut(connectionStationsLinesNumbers.get(j))) && stationNumberLessThanConnectionNumber)
+                        {
+                            connections.add(new Connection(zeroCut(connectionStationsLinesNumbers.get(j)), removeQuotes(connectionStationsNames.eachText().get(0))));
+                        }
+                        else stationNumberLessThanConnectionNumber = false;
                     }
 //                    System.out.println("Основная часть:");
 //                    System.out.println(zeroCut(linesNumbers.get(i)));
@@ -55,7 +60,7 @@ public class Main {
 //                    System.out.println("================");
                     logger.info("Прочитана станция: {}, Линия: {}, {}", stationName, lineName.get(i), zeroCut(linesNumbers.get(i)));
                     jsonClass.addLine(new Line(zeroCut(linesNumbers.get(i)), lineName.get(i)));
-                    if (!connections.isEmpty()) {
+                    if (!connections.isEmpty() && stationNumberLessThanConnectionNumber) {
                         connections.add(new Connection(zeroCut(linesNumbers.get(i)), stationName));
                         jsonClass.addConnections(connections);
                     }
@@ -105,6 +110,10 @@ public class Main {
         if (text.substring(0, 1).equals("«") && text.substring(text.length() - 1).equals("»"))
             return text.substring(1, text.length() - 1);
         else return text;
+    }
+
+    private static Integer toInt(String number) {
+        return Integer.parseInt(number.replaceAll("[^0-9]", ""));
     }
 
     private static String getJsonFile() {
